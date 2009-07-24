@@ -8,11 +8,7 @@ This plugin is perfect for those who commonly create content for which their bos
 
 Requires [Movable Type 4.0 or greater](http://www.movabletype.com).
 
-**Note:** changing author of pages is broken due to an issue in MT4.01. I'll post more info here when this is fixed in MT.
-
-### Download
-* [Ghostwriter v1.1](Ghostwriter_v1.1.zip) - 2007 Sep 20
-* [Ghostwriter v1.0](Ghostwriter_v1.0.zip) - 2007 Sep 19
+**Note:** changing author of pages is broken due to an issue in MT4.01 but fixed in MT4.1.
 
 ### Installation
 

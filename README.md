@@ -1,8 +1,6 @@
 # Ghostwriter
 
-## Reassign credit and get thanks for your assistance
-
-<img src="screenshot.png" alt="Ghostwriter Screenshot" width="351" height="112" style="float: right" />
+<img src="http://github.com/beausmith/mt-plugin-ghostwriter/raw/02cac265f3aef9c5c40d84e4872bbe825b1f7955/screenshot.png" alt="Ghostwriter Screenshot" width="351" height="112" style="float: right" />
 
 Ghostwriter is a Movable Type plugin that adds an author field to Edit Entry and Edit Page screens.
 To edit the author of an Entry or Page, a user must have the role of Editor or Blog Administrator.

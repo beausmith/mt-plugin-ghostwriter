@@ -1,14 +1,16 @@
 # Ghostwriter
 
-![Ghostwriter Screenshot](http://github.com/beausmith/mt-plugin-ghostwriter/blob/master/screenshot-select-author.png?raw=true)
-
 Ghostwriter is a Movable Type plugin that adds a control to change the author on Edit Entry and Edit Page screens.
 
 Perfect when the person entering or editing content is not the user to be specified as the author.
 
+## Documentation
+
 ### Editing Entry/Page Author
 
 An **Author** select list will be displayed on the **Edit Entry** and **Edit Page** screens for users with a role (in the current blog) containing the privilege to **Edit All Entries**.
+
+![Ghostwriter Screenshot](http://github.com/beausmith/mt-plugin-ghostwriter/blob/master/screenshot-select-author.png?raw=true)
 
 ### Authors Select Menu Population
 

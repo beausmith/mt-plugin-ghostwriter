@@ -1,1 +1,1 @@
-This plugin is not officially supported.. but bupport may be avalilable should you promise freshly baked cookies. =)
+This plugin is not officially supported, but support may be available should you promise freshly baked cookies. =)

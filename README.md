@@ -2,17 +2,24 @@
 
 ![Ghostwriter Screenshot](http://github.com/beausmith/mt-plugin-ghostwriter/blob/master/screenshot.png?raw=true)
 
-Ghostwriter is a Movable Type plugin that adds an author field to Edit Entry and Edit Page screens. This plugin is for those who add content to MT, but who need to specify another user as the author.
+Ghostwriter is a Movable Type plugin that adds an author field to Edit Entry
+and Edit Page screens. This plugin is for those who add content to MT, but who
+need to specify another user as the author.
 
-**Population of Authors Select Menu** - The select menu of authors is populated with users associated to the current blog with a role containing the privilege to "Create Entries" and/or "Edit All Entries".
+**Population of Authors Select Menu** - The select menu of authors is
+populated with users associated to the current blog with a role containing the
+privilege to "Create Entries" and/or "Edit All Entries".
 
-**Editing Entry/Page Author** - The select menu will be available to users associated to the current blog with a role containing the privilege to "Edit All Entries".
+**Editing Entry/Page Author** - The select menu will be available to users
+associated to the current blog with a role containing the privilege to "Edit
+All Entries".
 
 ### Requirements
 
 [Movable Type 4.0 or greater](http://www.movabletype.com)
 
-**Note:** an issue in MT4.01 doesn't allow changing page authors, but fixed in MT4.1+.
+**Note:** an issue in MT4.01 doesn't allow changing page authors, but fixed in
+MT4.1+.
 
 ### Installation
 
@@ -20,6 +27,8 @@ Ghostwriter is a Movable Type plugin that adds an author field to Edit Entry and
         plugins/
             Ghostwriter/
                 Ghostwriter.pl
+                tmpl/
+                    config.tmpl
         mt-static/
             plugins/
                 Ghostwriter/
@@ -28,6 +37,10 @@ Ghostwriter is a Movable Type plugin that adds an author field to Edit Entry and
 ### Revision History
 
 <dl>
+    <dt>v1.2 - 2009 Aug 21</dt>
+    <dd>Fixed select so it always includes the current author.<br />
+        Added an option to limit list of available authors to a specific
+        role.</dd>
     <dt>v1.1 - 2007 Sep 20</dt>
     <dd>Removed some testing code</dd>
     <dt>v1.0 - 2007 Sep 19</dt>

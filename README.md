@@ -4,13 +4,15 @@
 
 Ghostwriter is a Movable Type plugin that adds an author field to Edit Entry and Edit Page screens. This plugin is for those who add content to MT, but who need to specify another user as the author.
 
-The select menu of authors is populated with users which are associated to the current blog with a role containing the privilege to "Create Entries" and/or "Edit All Entries".
+**Population of Authors Select Menu** - The select menu of authors is populated with users associated to the current blog with a role containing the privilege to "Create Entries" and/or "Edit All Entries".
 
-The select menu will be available to users which are associated to the current blog with a role containing the privilege to "Edit All Entries".
+**Editing Entry/Page Author** - The select menu will be available to users associated to the current blog with a role containing the privilege to "Edit All Entries".
 
-Requires [Movable Type 4.0 or greater](http://www.movabletype.com).
+### Requirements
 
-**Note:** changing author of pages is broken due to an issue in MT4.01 but fixed in MT4.1.
+[Movable Type 4.0 or greater](http://www.movabletype.com)
+
+**Note:** an issue in MT4.01 doesn't allow changing page authors, but fixed in MT4.1+.
 
 ### Installation
 

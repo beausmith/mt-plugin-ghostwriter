@@ -2,9 +2,11 @@
 
 ![Ghostwriter Screenshot](http://github.com/beausmith/mt-plugin-ghostwriter/blob/master/screenshot.png?raw=true)
 
-Ghostwriter is a Movable Type plugin that adds an author field to Edit Entry and Edit Page screens.
-To edit the author of an Entry or Page, a user must have the role of Editor or Blog Administrator.
-This plugin is perfect for those who commonly create content for which their boss to takes credit!
+Ghostwriter is a Movable Type plugin that adds an author field to Edit Entry and Edit Page screens. This plugin is for those who add content to MT, but who need to specify another user as the author.
+
+The select menu of authors is populated with users which are associated to the current blog with a role containing the privilege to "Create Entries" and/or "Edit All Entries".
+
+The select menu will be available to users which are associated to the current blog with a role containing the privilege to "Edit All Entries".
 
 Requires [Movable Type 4.0 or greater](http://www.movabletype.com).
 

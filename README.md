@@ -1,6 +1,6 @@
 # Ghostwriter
 
-![Ghostwriter Screenshot](http://github.com/beausmith/mt-plugin-ghostwriter/blob/master/screenshot.png?raw=true)
+![Ghostwriter Screenshot](http://github.com/beausmith/mt-plugin-ghostwriter/blob/master/screenshot-select-author.png?raw=true)
 
 Ghostwriter is a Movable Type plugin that adds a control to change the author on Edit Entry and Edit Page screens.
 
@@ -18,7 +18,7 @@ There are two ways in which the **Author** select list is populated:
 
     To list all authors with the roles "Author" or "Editor" enter the following in the **Author Role(s)** field:
     
-        Author, Editor
+    ![Plugin Settings Screenshot](http://github.com/beausmith/mt-plugin-ghostwriter/blob/master/screenshot-plugin-settings.png?raw=true)
 
     ***Note:** Roles specified which do not exist will be ignored, but will cause the Author select list to be populated by role.*
 

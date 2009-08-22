@@ -8,7 +8,10 @@ Perfect when the person entering or editing content is not the user to be specif
 
 ### Editing Entry/Page Author
 
-An **Author** select list will be displayed on the **Edit Entry** and **Edit Page** screens for users with a role (in the current blog) containing the privilege to **Edit All Entries**.
+An **Author** select list will be displayed on the **Edit Entry** and **Edit Page** screens for users with:
+
+* a role (in the current blog) containing the privilege to **Edit All Entries**.
+* the **System Administrator** system permissions.
 
 ![Ghostwriter Screenshot](http://github.com/beausmith/mt-plugin-ghostwriter/blob/master/screenshot-select-author.png?raw=true)
 

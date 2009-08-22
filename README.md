@@ -14,7 +14,9 @@ An **Author** select list will be displayed on the **Edit Entry** and **Edit Pag
 
 ### Authors Select Menu Population
 
-There are two ways in which the **Author** select list is populated:
+There are two ways in which the **Author** select list is populated...
+
+**Note:** The select menu will not appear if only one user matches the population method in use.
 
 * ***Populating by role** is the recommended configuration.* In the system plugin settings, the **Author Role(s)** field can be populated with a comma-separated list of roles. When this field contains *any value*, users with the specified roles on the current blog will be listed in the Author select list.
 
@@ -24,7 +26,7 @@ There are two ways in which the **Author** select list is populated:
 
     ***Note:** Roles specified which do not exist will be ignored, but will cause the Author select list to be populated by role.*
 
-* If no value is specified in the system plugins settings, the **default behavior** is to populate the select list with users whom have a role (in the current blog) containing the privilege **Create Entries** and/or **Edit All Entries**... essentially any permission to *post*
+* If no value is specified in the system plugins settings, the **default population behavior** is to list with users whom have a role (in the current blog) containing the privilege **Create Entries** and/or **Edit All Entries**... essentially any permission to *post*
 
 If the entry/page is associated to a **user who no longer has the ability to publish** entries based upon one of the above methods, they will be listed and selected when viewing an entry they are the specified author of. If the author is changed and the form submitted, the user will no longer be listed unless they match one of the above methods.
 

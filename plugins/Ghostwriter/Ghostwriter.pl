@@ -109,7 +109,7 @@ sub _update_param {
     }
 
     $current_author ||= $app->user;
-    my $this_author_id = $current_author->id;
+    $this_author_id = $current_author->id;
     $params->{entry_author_name} = $current_author->name;
     $params->{entry_author_id} = $this_author_id;
 

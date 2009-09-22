@@ -4,7 +4,7 @@ use strict;
 use base qw( MT::Plugin );
 use MT 4.0;
 
-our $VERSION = 1.2; 
+our $VERSION = "1.2-ja-1"; # v1.2 + Work by Jay Allen
 
 my $plugin = MT::Plugin::Ghostwriter->new({
     id          => 'ghostwriter',
@@ -40,21 +40,29 @@ sub init_registry {
    });
 };
 
-# before saving the entry presave the new author
+# cms_pre_save.entry callback
+# Update the entry author (if needed) before saving the entry
 sub _pre_save {
     my ($cb, $app, $entry_page) = @_;
+    my $user = $app->user;
+    my $oldauthor  = $app->param("original_author_id") || 0;
+    my $newauthor  = $app->param("new_author_id");
 
-    # continue if user has permission to edit all posts
-    my $perms = $app->permissions;
-    return 1 unless ($perms && $perms->can_edit_all_posts);
+    # Return unless there's been a change in the author_id
+    # This prevents false positives for $entry->is_changed('author_id')
+    # A new entry is always considered to have a modified author_id
+    return 1 unless $newauthor and $newauthor != $oldauthor;
 
-    # continue if new_author_id is set
-    if (my $author_id = $app->param("new_author_id")) {
-        $entry_page->author_id($author_id);
+    # If there is a current app user, ensure proper permissions
+    if ( $user and ! $user->is_superuser() ) {
+        # Check user permissions on this blog
+        my $perms = $app->permissions;
+        return 1 unless ($perms && $perms->can_edit_all_posts);
     }
+    
+    # Update the entry's author_id setting with new value
+    $entry_page->author_id($newauthor);
     return 1;
-
-    #? Where does the plugin assist in updating the database
 }
 
 sub _update_param {
@@ -142,6 +150,7 @@ sub _update_param {
     });
 
     $created_by->innerHTML(<<'END_HTML');
+            <input type="hidden" name="original_author_id" value="<$mt:var name="entry_author_id"$>" />
             <select name="new_author_id" class="full-width">
         <mt:loop name="author_loop">
                 <option value="<$mt:var name="author_id"$>"<mt:if name="author_is_selected"> selected="selected"</mt:if>><$mt:var name="nickname"$></option>

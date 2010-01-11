@@ -4,7 +4,7 @@ use strict;
 use base qw( MT::Plugin );
 use MT 4.0;
 
-our $VERSION = "1.2-ja-1"; # v1.2 + Work by Jay Allen
+our $VERSION = "1.3";
 
 my $plugin = MT::Plugin::Ghostwriter->new({
     id          => 'ghostwriter',

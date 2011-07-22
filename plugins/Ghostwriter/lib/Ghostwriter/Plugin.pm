@@ -1,44 +1,7 @@
-package MT::Plugin::Ghostwriter;
+package Ghostwriter::Plugin;
 
 use strict;
-use base qw( MT::Plugin );
-use MT 4.0;
-
-our $VERSION = "1.3";
-
-my $plugin = MT::Plugin::Ghostwriter->new({
-    id          => 'ghostwriter',
-    key         => 'ghostwriter',
-    name        => 'Ghostwriter',
-    description => "Ghostwriter is a Movable Type plugin that adds an author field to Edit Entry and Edit Page screens for users with the role of Editor or Blog Administrator.",
-    version     => $VERSION,
-    icon        => 'Ghostwriter.gif',
-    author_name => "Beau Smith",
-    author_link => "http://beausmith.com/",
-    plugin_link => "http://beausmith.com/mt/plugins/ghostwriter/",
-    system_config_template => 'tmpl/config.tmpl',
-});
-
-# initialize plugin
-MT->add_plugin($plugin);
-
-# add plugin to the mt registry
-# set callbacks
-sub init_registry {
-    my $plugin = shift;
-    $plugin->registry({
-        callbacks => {
-            'MT::App::CMS::template_param.edit_entry' => \&_update_param,
-            'MT::App::CMS::cms_pre_save.entry' => \&_pre_save,
-        },
-        settings => {
-            author_roles => {
-                default => '',
-                scope => 'system',
-            },
-        },
-   });
-};
+use warnings;
 
 # cms_pre_save.entry callback
 # Update the entry author (if needed) before saving the entry
@@ -65,6 +28,8 @@ sub _pre_save {
     return 1;
 }
 
+# template_param.edit_entry callback
+# Add the author picker to the Edit Entry/Edit Page screen.
 sub _update_param {
     my ($cb, $app, $params, $template) = @_;
 
@@ -73,6 +38,7 @@ sub _update_param {
     return unless ($perms && $perms->can_edit_all_posts);
 
     # Load authors with permission on this blog
+    my $plugin = MT->component('ghostwriter');
     my $author_roles = $plugin->get_config_value('author_roles');
 
     my $auth_iter;
@@ -163,3 +129,5 @@ END_HTML
 }
 
 1;
+
+__END__

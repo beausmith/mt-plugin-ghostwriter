@@ -6,15 +6,23 @@ icon: 'Ghostwriter.gif'
 author_name: "Beau Smith"
 author_link: "http://beausmith.com/"
 plugin_link: "https://github.com/beausmith/mt-plugin-ghostwriter"
-version: 1.3
+version: 1.4
 
 callbacks:
     MT::App::CMS::template_param.edit_entry: Ghostwriter::Plugin::update_param
     MT::App::CMS::cms_pre_save.entry:        Ghostwriter::Plugin::pre_save
 
+applications:
+    cms:
+        methods:
+            ghostwriter_pick_author: Ghostwriter::Plugin::popup_select_author
+
 settings:
     author_roles:
         default: ''
+        scope: 'system'
+    author_select_type:
+        default: 'dropdown'
         scope: 'system'
 
 system_config_template: 'tmpl/config.tmpl'

@@ -13,6 +13,8 @@ An **Author** select list will be displayed on the **Edit Entry** and **Edit Pag
 * a role (in the current blog) containing the privilege to **Edit All Entries**.
 * the **System Administrator** system permissions.
 
+Valid authors can be selected from a dropdown list (as shown in this screenshot) or from a searchable, popup dialog.
+
 ![Ghostwriter Screenshot](http://github.com/beausmith/mt-plugin-ghostwriter/blob/master/screenshot-select-author.png?raw=true)
 
 ### Authors Select Menu Population
@@ -33,6 +35,9 @@ There are two ways in which the **Author** select list is populated...
 
 If the entry/page is associated to a **user who no longer has the ability to publish** entries based upon one of the above methods, they will be listed and selected when viewing an entry they are the specified author of. If the author is changed and the form submitted, the user will no longer be listed unless they match one of the above methods.
 
+The Author select list is available as either a dropdown list or a popup dialog. This selection is made from the system plugin Settings screen.
+
+
 ## Requirements
 
 [Movable Type 4.0 or greater](http://www.movabletype.com)
@@ -45,9 +50,7 @@ MT4.1+.
     MT_DIR/
         plugins/
             Ghostwriter/
-                Ghostwriter.pl
-                tmpl/
-                    config.tmpl
+                [Files and folders]
         mt-static/
             plugins/
                 Ghostwriter/
@@ -56,6 +59,11 @@ MT4.1+.
 ## Revision History
 
 <dl>
+    <dt>v1.4 - 2011 Jul 22</dt>
+    <dd>Converted to a <code>config.yaml</code> style plugin.<br />
+        Added a popup dialog author select option.</dd>
+    <dt>v1.3 - 2010 Jan 11</dt>
+    <dd>Initial MT 5.x fix</dd>
     <dt>v1.2 - 2009 Aug 21</dt>
     <dd>Always include current author in select menu.<br />
         Limit list of available authors to a specific role(s).</dd>
@@ -69,11 +77,11 @@ MT4.1+.
 
 * [Beau Smith](http://beausmith.com) of [Six Apart](http://www.sixapart.com)
 * [Brad Choate](http://bradchoate.com) of [Six Apart](http://www.sixapart.com)
-
+* [Dan Wolfgang](http://danandsherree.com) of [Endevver](http://endevver.com)
 
 ## Plugin Website
 
-<http://beausmith.com/mt/plugins/ghostwriter/>
+<https://github.com/beausmith/mt-plugin-ghostwriter>
 
 Enjoy!
 

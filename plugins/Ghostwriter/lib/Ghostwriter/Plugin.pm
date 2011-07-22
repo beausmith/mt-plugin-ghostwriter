@@ -38,6 +38,30 @@ sub update_param {
     my $perms = $app->permissions;
     return unless ($perms && $perms->can_edit_all_posts);
 
+    if ( $plugin->get_config_value('author_select_type') eq 'popup') {
+        _create_popup_interface({
+            plugin   => $plugin,
+            params   => $params,
+            template => $template,
+        });
+    }
+    else { # The dropdown interface is the default
+        _create_dropdown_interface({
+            plugin   => $plugin,
+            params   => $params,
+            template => $template,
+        });
+    }
+
+}
+
+sub _create_dropdown_interface {
+    my ($arg_ref) = @_;
+    my $plugin   = $arg_ref->{plugin};
+    my $params   = $arg_ref->{params};
+    my $template = $arg_ref->{template};
+    my ($app)    = MT->instance;
+
     # Load authors with permission on this blog
     my $author_roles = $plugin->get_config_value('author_roles');
 
@@ -126,6 +150,140 @@ sub update_param {
 END_HTML
 
     $template->insertAfter($created_by, $position);
+}
+
+# If the popup dialog is to be used to select the author, we need to provide
+# a link to create that popup as well as inform the user who the current
+# author is.
+sub _create_popup_interface {
+    my ($arg_ref) = @_;
+    my $plugin   = $arg_ref->{plugin};
+    my $params   = $arg_ref->{params};
+    my $template = $arg_ref->{template};
+    my ($app)    = MT->instance;
+    
+    # Grab the entry's current author so that it can be displayed next to the
+    # popup selector link.
+    my $current_author;
+    if (my $entry_id = $params->{id}) {
+        my $entry = MT->model('entry')->load($entry_id);
+        $current_author = $entry->author if $entry;
+    }
+
+    my $position = $template->getElementById('status');
+    my $created_by = $template->createElement('App:Setting', {
+        id => "entry_author_name",
+        label => '<__trans phrase="Author">',
+        label_class => "left-label",
+    });
+
+    # A hidden field records the original author ID, while another records 
+    # the new author ID which is saved later in a cms_pre_save.entry callback.
+    my $inner_html = '<input type="hidden" name="original_author_id" '
+        . 'id="original_author_id" value="' . $current_author->id . '" />'
+        . '<input type="hidden" name="new_author_id" id="new_author_id" />';
+    
+    # Create the author widget display name and "change author" content.
+    $inner_html .= '<div style="padding-top: 2px;">' # 2px aligns horizontally
+        . '<span id="current_author_display_name" style="padding-right: 5px;">' 
+        . $current_author->nickname . '</span>'
+
+        . ' (<a href="javascript:void(0)" onclick="return '
+            . "openDialog(false, 'ghostwriter_pick_author', "
+            . "'blog_id=<mt:BlogID>&amp;idfield=new_author_id&amp;"
+            . "namefield=current_author_display_name&amp;"
+            . "cur_author_display_name='"
+            . " + document.getElementById('current_author_display_name').innerHTML )" 
+        . '">change&nbsp;author</a>)' # Don't break across lines
+        . '</div>';
+
+    $created_by->innerHTML( $inner_html );
+    $template->insertAfter($created_by, $position);
+}
+
+# This is the popup window that a user can pick an author from.
+sub popup_select_author {
+    my $app  = shift;
+    my $q      = $app->query;
+    my $param  = {};
+    my $plugin = MT->component('ghostwriter');
+
+    # Load authors with permission on this blog
+    my $author_roles = $plugin->get_config_value('author_roles');
+
+    # Create the arguments for the listing screen based on whether roles have
+    # been specified for Ghostwriter to filter on.
+    my $args = {};
+    if ($author_roles) {
+        my @roles = map { $_->id } MT->model('role')->load({ 
+            name => [ split(/\s*,\s*/, $author_roles) ]
+        });
+        return unless @roles;
+
+        $args = {
+            sort => 'name',
+            join => MT::Association->join_on('author_id', {
+                role_id => \@roles,
+                blog_id => $app->param('blog_id')
+            }),
+        };
+    }
+    else {
+        $args = {
+            sort => 'name',
+            join => MT::Permission->join_on('author_id', {
+                blog_id => $app->param('blog_id'),
+                # attempt to filter for postish permissions (excludes
+                # registered users who only have permission to comment
+                # for instance)
+                permissions => { like => '%post%', }
+            })
+        };
+    }
+
+    my $hasher = sub {
+        my ( $obj, $row ) = @_;
+        $row->{label}       = $row->{name};
+        $row->{description} = $row->{nickname};
+    };
+
+    # MT::CMS::User::dialog_select_author mostly does what is needed, so that
+    # served as the starting point. We're supplying an argument list to 
+    # augment it.
+    $app->listing(
+        {
+            type  => 'author',
+            terms => {
+                type   => MT::Author::AUTHOR(),
+                status => MT::Author::ACTIVE(),
+            },
+            args     => $args,
+            code     => $hasher,
+            template => 'plugins/Ghostwriter/tmpl/pick_author.mtml',
+            params   => {
+                dialog_title =>
+                  $app->translate("Select an entry author"),
+                items_prompt =>
+                  $app->translate("Selected author"),
+                search_prompt => $app->translate(
+                    "Type a username to filter the choices below."),
+                panel_title       => $app->translate("Current author: ") 
+                    . $q->param('cur_author_display_name'),
+                panel_label       => $app->translate("Entry Author"),
+                panel_description => $app->translate("Display Name"),
+                panel_type        => 'author',
+                panel_multi       => defined $app->param('multi')
+                ? $app->param('multi')
+                : 0,
+                panel_searchable => 1,
+                panel_first      => 1,
+                panel_last       => 1,
+                list_noncron     => 1,
+                idfield          => $app->param('idfield'),
+                namefield        => $app->param('namefield'),
+            },
+        }
+    );
 }
 
 1;

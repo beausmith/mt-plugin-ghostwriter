@@ -9,8 +9,8 @@ plugin_link: "https://github.com/beausmith/mt-plugin-ghostwriter"
 version: 1.3
 
 callbacks:
-    MT::App::CMS::template_param.edit_entry: Ghostwriter::Plugin::_update_param
-    MT::App::CMS::cms_pre_save.entry:        Ghostwriter::Plugin::_pre_save
+    MT::App::CMS::template_param.edit_entry: Ghostwriter::Plugin::update_param
+    MT::App::CMS::cms_pre_save.entry:        Ghostwriter::Plugin::pre_save
 
 settings:
     author_roles:

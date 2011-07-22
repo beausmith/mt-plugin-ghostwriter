@@ -5,11 +5,11 @@ use warnings;
 
 # cms_pre_save.entry callback
 # Update the entry author (if needed) before saving the entry
-sub _pre_save {
+sub pre_save {
     my ($cb, $app, $entry_page) = @_;
     my $user = $app->user;
-    my $oldauthor  = $app->param("original_author_id") || 0;
-    my $newauthor  = $app->param("new_author_id");
+    my $oldauthor = $app->param("original_author_id") || 0;
+    my $newauthor = $app->param("new_author_id");
 
     # Return unless there's been a change in the author_id
     # This prevents false positives for $entry->is_changed('author_id')
@@ -30,15 +30,15 @@ sub _pre_save {
 
 # template_param.edit_entry callback
 # Add the author picker to the Edit Entry/Edit Page screen.
-sub _update_param {
+sub update_param {
     my ($cb, $app, $params, $template) = @_;
+    my $plugin = MT->component('ghostwriter');
 
     # continue if user has permission to edit all posts
     my $perms = $app->permissions;
     return unless ($perms && $perms->can_edit_all_posts);
 
     # Load authors with permission on this blog
-    my $plugin = MT->component('ghostwriter');
     my $author_roles = $plugin->get_config_value('author_roles');
 
     my $auth_iter;

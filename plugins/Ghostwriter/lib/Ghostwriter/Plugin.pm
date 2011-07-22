@@ -109,11 +109,11 @@ sub _update_param {
     @a_data = sort { lc $a->{nickname} cmp lc $b->{nickname} } @a_data;
     $params->{author_loop} = \@a_data;
 
-    my $position = $template->getElementById('basename');
+    my $position = $template->getElementById('status');
     my $created_by = $template->createElement('App:Setting', {
         id => "entry_author_name",
         label => '<__trans phrase="Author">',
-        label_class => "top-label",
+        label_class => "left-label",
     });
 
     $created_by->innerHTML(<<'END_HTML');
@@ -125,7 +125,7 @@ sub _update_param {
             </select>
 END_HTML
 
-    $template->insertBefore($created_by, $position);
+    $template->insertAfter($created_by, $position);
 }
 
 1;

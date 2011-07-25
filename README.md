@@ -80,7 +80,7 @@ MT4.1+.
 ## Revision History
 
 <dl>
-    <dt>v1.4 - 2011 Jul 22</dt>
+    <dt>v1.5 - 2011 Jul 25</dt>
     <dd>Converted to a <code>config.yaml</code> style plugin.<br />
         Added a popup dialog author select option.</dd>
     <dt>v1.3 - 2010 Jan 11</dt>

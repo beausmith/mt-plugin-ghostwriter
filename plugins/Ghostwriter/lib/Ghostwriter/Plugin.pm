@@ -34,12 +34,28 @@ sub update_param {
     my ($cb, $app, $params, $template) = @_;
     my $plugin = MT->component('ghostwriter');
 
+    # This plugin works with MT4 and MT5, though MT5 needs some special 
+    # handling. Create the pertinet variables here and just use them later.
+    my $options = {};
+    if (
+        $app->product_name =~ m/Movable/  # Movable Type
+        && $app->product_version =~ m/^5/ # Version 5.x
+    ) {
+        $options->{position} = 'basename';
+        $options->{label_class} = 'top-label';
+    }
+    else {
+        $options->{position} = 'authored_on';
+        $options->{label_class} = 'left-label';
+    }
+
     # continue if user has permission to edit all posts
     my $perms = $app->permissions;
     return unless ($perms && $perms->can_edit_all_posts);
 
     if ( $plugin->get_config_value('author_select_type') eq 'popup') {
         _create_popup_interface({
+            options  => $options,
             plugin   => $plugin,
             params   => $params,
             template => $template,
@@ -47,6 +63,7 @@ sub update_param {
     }
     else { # The dropdown interface is the default
         _create_dropdown_interface({
+            options  => $options,
             plugin   => $plugin,
             params   => $params,
             template => $template,
@@ -57,6 +74,7 @@ sub update_param {
 
 sub _create_dropdown_interface {
     my ($arg_ref) = @_;
+    my $options  = $arg_ref->{options};
     my $plugin   = $arg_ref->{plugin};
     my $params   = $arg_ref->{params};
     my $template = $arg_ref->{template};
@@ -133,11 +151,11 @@ sub _create_dropdown_interface {
     @a_data = sort { lc $a->{nickname} cmp lc $b->{nickname} } @a_data;
     $params->{author_loop} = \@a_data;
 
-    my $position = $template->getElementById('status');
+    my $position = $template->getElementById( $options->{position} );
     my $created_by = $template->createElement('App:Setting', {
-        id => "entry_author_name",
-        label => '<__trans phrase="Author">',
-        label_class => "left-label",
+        id          => "entry_author_name",
+        label       => '<__trans phrase="Author">',
+        label_class => $options->{label_class},
     });
 
     $created_by->innerHTML(<<'END_HTML');
@@ -149,7 +167,7 @@ sub _create_dropdown_interface {
             </select>
 END_HTML
 
-    $template->insertAfter($created_by, $position);
+    $template->insertBefore($created_by, $position);
 }
 
 # If the popup dialog is to be used to select the author, we need to provide
@@ -157,11 +175,12 @@ END_HTML
 # author is.
 sub _create_popup_interface {
     my ($arg_ref) = @_;
+    my $options  = $arg_ref->{options};
     my $plugin   = $arg_ref->{plugin};
     my $params   = $arg_ref->{params};
     my $template = $arg_ref->{template};
     my ($app)    = MT->instance;
-    
+
     # Grab the entry's current author so that it can be displayed next to the
     # popup selector link.
     my $current_author;
@@ -170,11 +189,11 @@ sub _create_popup_interface {
         $current_author = $entry->author if $entry;
     }
 
-    my $position = $template->getElementById('status');
+    my $position = $template->getElementById( $options->{position} );
     my $created_by = $template->createElement('App:Setting', {
-        id => "entry_author_name",
-        label => '<__trans phrase="Author">',
-        label_class => "left-label",
+        id          => "entry_author_name",
+        label       => '<__trans phrase="Author">',
+        label_class => $options->{label_class},
     });
 
     # A hidden field records the original author ID, while another records 
@@ -182,7 +201,7 @@ sub _create_popup_interface {
     my $inner_html = '<input type="hidden" name="original_author_id" '
         . 'id="original_author_id" value="' . $current_author->id . '" />'
         . '<input type="hidden" name="new_author_id" id="new_author_id" />';
-    
+
     # Create the author widget display name and "change author" content.
     $inner_html .= '<div style="padding-top: 2px;">' # 2px aligns horizontally
         . '<span id="current_author_display_name" style="padding-right: 5px;">' 
@@ -198,7 +217,7 @@ sub _create_popup_interface {
         . '</div>';
 
     $created_by->innerHTML( $inner_html );
-    $template->insertAfter($created_by, $position);
+    $template->insertBefore($created_by, $position);
 }
 
 # This is the popup window that a user can pick an author from.

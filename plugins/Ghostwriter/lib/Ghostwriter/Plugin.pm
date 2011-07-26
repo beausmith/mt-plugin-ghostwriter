@@ -181,9 +181,10 @@ sub _create_popup_interface {
     my $template = $arg_ref->{template};
     my ($app)    = MT->instance;
 
-    # Grab the entry's current author so that it can be displayed next to the
-    # popup selector link.
-    my $current_author;
+    # Set the currently logged-in user as the default, which is a fallback 
+    # specifically for when creating a new Entry/Page. If this is a saved 
+    # Entry/Page, set the current author to the saved author.
+    my $current_author = $app->user;
     if (my $entry_id = $params->{id}) {
         my $entry = MT->model('entry')->load($entry_id);
         $current_author = $entry->author if $entry;

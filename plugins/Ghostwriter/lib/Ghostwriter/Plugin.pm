@@ -223,8 +223,8 @@ sub _create_popup_interface {
 
 # This is the popup window that a user can pick an author from.
 sub popup_select_author {
-    my $app  = shift;
-    my $q      = $app->query;
+    my $app    = shift;
+    my $q      = $app->param;
     my $param  = {};
     my $plugin = MT->component('ghostwriter');
 

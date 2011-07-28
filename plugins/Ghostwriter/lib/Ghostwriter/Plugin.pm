@@ -101,6 +101,7 @@ sub _create_dropdown_interface {
         );
     }
     else {
+        require MT::Permission;
         $auth_iter = MT::Author->load_iter(
             { type => MT::Author::AUTHOR() },
             {
@@ -240,6 +241,7 @@ sub popup_select_author {
         });
         return unless @roles;
 
+        require MT::Association;
         $args = {
             sort => 'name',
             join => MT::Association->join_on('author_id', {
@@ -249,6 +251,7 @@ sub popup_select_author {
         };
     }
     else {
+        require MT::Permission;
         $args = {
             sort => 'name',
             join => MT::Permission->join_on('author_id', {

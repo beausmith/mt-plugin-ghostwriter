@@ -82,6 +82,7 @@ sub _create_dropdown_interface {
 
     # Load authors with permission on this blog
     my $author_roles = $plugin->get_config_value('author_roles');
+    my $default = $plugin->get_config_value('default_author','blog:'.$app->blog->id);
 
     my $auth_iter;
     if ($author_roles) {
@@ -121,8 +122,11 @@ sub _create_dropdown_interface {
     my $current_author;
 
     if (my $entry_id = $params->{id}) {
-        my $entry = MT::Entry->load($entry_id);
+        my $entry = MT->model('entry')->load($entry_id);
         $current_author = $entry->author if $entry;
+    } elsif ($default ne '') {
+        my $author = MT->model('author')->load({ nickname => $default });
+        $current_author = $author if $author;
     }
 
     $current_author ||= $app->user;

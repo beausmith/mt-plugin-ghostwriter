@@ -6,7 +6,7 @@ icon: 'Ghostwriter.gif'
 author_name: "Beau Smith"
 author_link: "http://beausmith.com/"
 plugin_link: "https://github.com/beausmith/mt-plugin-ghostwriter"
-version: 1.5.3
+version: 1.5.4
 
 callbacks:
     MT::App::CMS::template_param.edit_entry: Ghostwriter::Plugin::update_param

@@ -93,10 +93,16 @@ sub _create_dropdown_interface {
         $auth_iter = MT::Author->load_iter(
             { type => MT::Author::AUTHOR() },
             {
-                'join' => MT::Association->join_on('author_id', {
-                    'role_id' => \@roles,
-                    'blog_id' => $app->param('blog_id')
-                }),
+                'join' => MT::Association->join_on(
+                    'author_id', 
+                    {
+                        role_id => \@roles,
+                        blog_id => $app->param('blog_id'),
+                    },
+                    {
+                        unique => 1,
+                    }
+                ),
             }
         );
     }
@@ -244,10 +250,16 @@ sub popup_select_author {
         require MT::Association;
         $args = {
             sort => 'name',
-            join => MT::Association->join_on('author_id', {
-                role_id => \@roles,
-                blog_id => $app->param('blog_id')
-            }),
+            join => MT::Association->join_on(
+                'author_id',
+                {
+                    role_id => \@roles,
+                    blog_id => $app->param('blog_id')
+                },
+                {
+                    unique => 1,
+                },
+            ),
         };
     }
     else {

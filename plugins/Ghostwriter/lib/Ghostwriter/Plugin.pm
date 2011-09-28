@@ -111,13 +111,17 @@ sub _create_dropdown_interface {
         $auth_iter = MT::Author->load_iter(
             { type => MT::Author::AUTHOR() },
             {
-                'join' => MT::Permission->join_on('author_id', {
-                    blog_id => $app->param('blog_id'),
-                    # attempt to filter for postish permissions (excludes
-                    # registered users who only have permission to comment
-                    # for instance)
-                    permissions => { like => '%post%', }
-                })
+                'join' => MT::Permission->join_on(
+                    'author_id',
+                    {
+                        blog_id => $app->param('blog_id'),
+                        # attempt to filter for postish permissions (excludes
+                        # registered users who only have permission to comment
+                        # for instance)
+                        permissions => { like => '%post%', },
+                    },
+                    undef,
+                ),
             }
         );
     }
@@ -266,13 +270,17 @@ sub popup_select_author {
         require MT::Permission;
         $args = {
             sort => 'name',
-            join => MT::Permission->join_on('author_id', {
-                blog_id => $app->param('blog_id'),
-                # attempt to filter for postish permissions (excludes
-                # registered users who only have permission to comment
-                # for instance)
-                permissions => { like => '%post%', }
-            })
+            join => MT::Permission->join_on(
+                'author_id',
+                {
+                    blog_id => $app->param('blog_id'),
+                    # attempt to filter for postish permissions (excludes
+                    # registered users who only have permission to comment
+                    # for instance)
+                    permissions => { like => '%post%', },
+                },
+                undef
+            ),
         };
     }
 

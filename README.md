@@ -58,10 +58,15 @@ they match one of the above methods.
 The Author select list is available as either a dropdown list or a popup
 dialog. This selection is made from the system plugin Settings screen.
 
+At the blog level, a default author can be selected for new entries.
+
 
 ## Requirements
 
-[Movable Type 4.0 or greater](http://www.movabletype.com)
+* [Movable Type 4.0 or greater](http://www.movabletype.com)
+* [Config
+  Assistant](https://github.com/openmelody/mt-plugin-configassistant/downloads)
+  version 2.2.5 or greater
 
 **Note:** an issue in MT4.01 doesn't allow changing page authors, but fixed in
 MT4.1+.

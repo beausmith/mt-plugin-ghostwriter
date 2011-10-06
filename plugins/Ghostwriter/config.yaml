@@ -19,22 +19,20 @@ applications:
             ghostwriter_pick_author: Ghostwriter::Plugin::popup_select_author
 
 options:
-  author_roles:
-    label: "Author Role(s)"
-    hint: "Comma separated list of role names for your authors."
-    type: text
-    scope: system
-  default_author:
-    label: "Default Author"
-    hint: "Enter the name of the author you would like selected by default. Leave blank if you wish it to default to the currently logged in user."
-    type: text
-    scope: blog
-  author_select_type:
-    label: "Author Selection Type"
-    hint: "Choose how you'd prefer to select an author for Entry/Page ownership. The dropdown list is the &ldquo;original&rdquo; and faster method, however a popup may be preferred when choosing from many authors."
-    type: radio
-    values: "popup,dropdown"
-    default: dropdown
-    scope: system
-
-
+    author_roles:
+        label: "Author Role(s)"
+        hint: "Comma separated list of role names for your authors."
+        type: text
+        scope: system
+    author_select_type:
+        label: "Author Selection Type"
+        hint: "Choose how you'd prefer to select an author for Entry/Page ownership. The dropdown list is the &ldquo;original&rdquo; and faster method, however a popup may be preferred when choosing from many authors."
+        type: radio
+        values: 'Popup, Dropdown'
+        default: dropdown
+        scope: system
+    default_author:
+        label: "Default Author"
+        hint: "Enter the name of the author you would like selected by default. Leave blank if you wish it to default to the currently logged in user."
+        type: author
+        scope: blog

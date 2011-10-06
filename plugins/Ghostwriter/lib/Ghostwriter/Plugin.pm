@@ -53,7 +53,7 @@ sub update_param {
     my $perms = $app->permissions;
     return unless ($perms && $perms->can_edit_all_posts);
 
-    if ( $plugin->get_config_value('author_select_type') eq 'popup') {
+    if ( $plugin->get_config_value('author_select_type') eq 'Popup') {
         _create_popup_interface({
             options  => $options,
             plugin   => $plugin,

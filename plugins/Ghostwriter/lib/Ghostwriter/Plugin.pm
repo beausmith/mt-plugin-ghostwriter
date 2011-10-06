@@ -82,7 +82,6 @@ sub _create_dropdown_interface {
 
     # Load authors with permission on this blog
     my $author_roles = $plugin->get_config_value('author_roles');
-    my $default = $plugin->get_config_value('default_author','blog:'.$app->blog->id);
 
     my $auth_iter;
     if ($author_roles) {
@@ -130,12 +129,14 @@ sub _create_dropdown_interface {
     my @a_data;
     my $this_author_id;
     my $current_author;
+    # If a default author was specified for this blog, use them.
+    my $default = $plugin->get_config_value('default_author','blog:'.$app->blog->id);
 
     if (my $entry_id = $params->{id}) {
         my $entry = MT->model('entry')->load($entry_id);
         $current_author = $entry->author if $entry;
     } elsif ($default ne '') {
-        my $author = MT->model('author')->load({ nickname => $default });
+        my $author = MT->model('author')->load( $default );
         $current_author = $author if $author;
     }
 
@@ -174,7 +175,9 @@ sub _create_dropdown_interface {
     });
 
     $created_by->innerHTML(<<'END_HTML');
+        <mt:If name="id">
             <input type="hidden" name="original_author_id" value="<$mt:var name="entry_author_id"$>" />
+        </mt:If>
             <select name="new_author_id" class="full-width">
         <mt:loop name="author_loop">
                 <option value="<$mt:var name="author_id"$>"<mt:if name="author_is_selected"> selected="selected"</mt:if>><$mt:var name="nickname"$></option>
@@ -196,13 +199,18 @@ sub _create_popup_interface {
     my $template = $arg_ref->{template};
     my ($app)    = MT->instance;
 
-    # Set the currently logged-in user as the default, which is a fallback 
+    # If a default author was specified, set them as the default. Otherwise
+    # set the currently logged-in user as the default. These are fallbacks
     # specifically for when creating a new Entry/Page. If this is a saved 
     # Entry/Page, set the current author to the saved author.
+    my $default = $plugin->get_config_value('default_author','blog:'.$app->blog->id);
     my $current_author = $app->user;
     if (my $entry_id = $params->{id}) {
         my $entry = MT->model('entry')->load($entry_id);
         $current_author = $entry->author if $entry;
+    } elsif ($default ne '') {
+        my $author = MT->model('author')->load( $default );
+        $current_author = $author if $author;
     }
 
     my $position = $template->getElementById( $options->{position} );
@@ -214,9 +222,10 @@ sub _create_popup_interface {
 
     # A hidden field records the original author ID, while another records 
     # the new author ID which is saved later in a cms_pre_save.entry callback.
-    my $inner_html = '<input type="hidden" name="original_author_id" '
-        . 'id="original_author_id" value="' . $current_author->id . '" />'
-        . '<input type="hidden" name="new_author_id" id="new_author_id" />';
+    my $inner_html = '<mt:If name="id"><input type="hidden" '
+        . 'name="original_author_id" id="original_author_id" /></mt:If>'
+        . '<input type="hidden" name="new_author_id" id="new_author_id" '
+        . 'value="' . $current_author->id . '" />';
 
     # Create the author widget display name and "change author" content.
     $inner_html .= '<div style="padding-top: 2px;">' # 2px aligns horizontally

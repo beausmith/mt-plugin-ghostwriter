@@ -20,7 +20,10 @@ sub pre_save {
     if ( $user and ! $user->is_superuser() ) {
         # Check user permissions on this blog
         my $perms = $app->permissions;
-        return 1 unless ($perms && $perms->can_edit_all_posts);
+        return 1 unless (
+            $app->user->is_superuser() 
+            || ($perms && $perms->can_edit_all_posts)
+        );
     }
     
     # Update the entry's author_id setting with new value
@@ -51,7 +54,10 @@ sub update_param {
 
     # continue if user has permission to edit all posts
     my $perms = $app->permissions;
-    return unless ($perms && $perms->can_edit_all_posts);
+    return unless (
+        $app->user->is_superuser() 
+        || ($perms && $perms->can_edit_all_posts) 
+    );
 
     if ( $plugin->get_config_value('author_select_type') eq 'Popup') {
         _create_popup_interface({

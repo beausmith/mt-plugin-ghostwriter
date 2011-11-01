@@ -7,9 +7,10 @@ use warnings;
 # Update the entry author (if needed) before saving the entry
 sub pre_save {
     my ($cb, $app, $entry_page) = @_;
+    my $q = $app->param;
     my $user = $app->user;
-    my $oldauthor = $app->param("original_author_id") || 0;
-    my $newauthor = $app->param("new_author_id");
+    my $oldauthor = $q->param("original_author_id") || 0;
+    my $newauthor = $q->param("new_author_id");
 
     # Return unless there's been a change in the author_id
     # This prevents false positives for $entry->is_changed('author_id')
@@ -35,6 +36,7 @@ sub pre_save {
 # Add the author picker to the Edit Entry/Edit Page screen.
 sub update_param {
     my ($cb, $app, $params, $template) = @_;
+    my $q = $app->param;
     my $plugin = MT->component('ghostwriter');
 
     # continue if user has permission to edit all posts
@@ -59,22 +61,59 @@ sub update_param {
         $options->{label_class} = 'left-label';
     }
 
+    # If a default author was specified for this blog, use them.
+    my $default = $plugin->get_config_value(
+        'default_author',
+        'blog:' . $q->param('blog_id')
     );
 
+    # Set the $current_author variable, to be used later in both the popup and
+    # dropdown style interfaces.
+    my $current_author;
+
+    # Is this an existing entry? If yes, we want to check if the entry was
+    # previewed (and then find the author supplied from the preview). If not
+    # previewed, load the author assigned to the entry.
+    if (my $entry_id = $params->{id}) {
+
+        # This entry was previewed, and the user clicked "Re-Edit this Entry"
+        # so they are back at the Edit Entry interface. Use the `reedit` flag
+        # to know this and load the correct author.
+        if ( $app->param('reedit') ) {
+            my $author = MT->model('author')->load( $q->param('author_id') );
+            $current_author = $author if $author;
+        }
+        
+        # This is simply a previously-saved entry, now being edited.
+        else {
+            my $entry = MT->model('entry')->load($entry_id);
+            $current_author = $entry->author if $entry;
+        }
+
+    # This is a new entry. Check if a Default Author was specified in
+    # GhostWriter's plugin Settings, and use it.
+    } elsif ($default ne '') {
+        my $author = MT->model('author')->load( $default );
+        $current_author = $author if $author;
+    }
+
+    # Finally, build the interface.
     if ( $plugin->get_config_value('author_select_type') eq 'Popup') {
         _create_popup_interface({
-            options  => $options,
-            plugin   => $plugin,
-            params   => $params,
-            template => $template,
+            options        => $options,
+            plugin         => $plugin,
+            params         => $params,
+            template       => $template,
+            current_author => $current_author,
         });
     }
     else { # The dropdown interface is the default
         _create_dropdown_interface({
-            options  => $options,
-            plugin   => $plugin,
-            params   => $params,
-            template => $template,
+            options        => $options,
+            plugin         => $plugin,
+            params         => $params,
+            template       => $template,
+            current_author => $current_author,
         });
     }
 
@@ -82,11 +121,13 @@ sub update_param {
 
 sub _create_dropdown_interface {
     my ($arg_ref) = @_;
-    my $options  = $arg_ref->{options};
-    my $plugin   = $arg_ref->{plugin};
-    my $params   = $arg_ref->{params};
-    my $template = $arg_ref->{template};
-    my ($app)    = MT->instance;
+    my $options        = $arg_ref->{options};
+    my $plugin         = $arg_ref->{plugin};
+    my $params         = $arg_ref->{params};
+    my $template       = $arg_ref->{template};
+    my $current_author = $arg_ref->{current_author};
+    my ($app) = MT->instance;
+    my $q     = $app->param;
 
     # Load authors with permission on this blog
     my $author_roles = $plugin->get_config_value('author_roles');
@@ -96,7 +137,9 @@ sub _create_dropdown_interface {
     my $auth_iter;
     if ($author_roles) {
         require MT::Role;
-        my @roles = map { $_->id } MT::Role->load({ name => [ split /\s*,\s*/, $author_roles ]});
+        my @roles = map { $_->id } MT::Role->load({ 
+            name => [ split /\s*,\s*/, $author_roles ]
+        });
         return unless @roles;
 
         require MT::Association;
@@ -107,7 +150,7 @@ sub _create_dropdown_interface {
                     'author_id', 
                     {
                         role_id => \@roles,
-                        blog_id => $app->param('blog_id'),
+                        blog_id => $q->param('blog_id'),
                     },
                     {
                         unique => 1,
@@ -127,7 +170,7 @@ sub _create_dropdown_interface {
                 'join' => MT::Permission->join_on(
                     'author_id',
                     {
-                        blog_id => $app->param('blog_id'),
+                        blog_id => $q->param('blog_id'),
                         # attempt to filter for postish permissions (excludes
                         # registered users who only have permission to comment
                         # for instance)
@@ -141,17 +184,6 @@ sub _create_dropdown_interface {
 
     my @a_data;
     my $this_author_id;
-    my $current_author;
-    # If a default author was specified for this blog, use them.
-    my $default = $plugin->get_config_value('default_author','blog:'.$app->blog->id);
-
-    if (my $entry_id = $params->{id}) {
-        my $entry = MT->model('entry')->load($entry_id);
-        $current_author = $entry->author if $entry;
-    } elsif ($default ne '') {
-        my $author = MT->model('author')->load( $default );
-        $current_author = $author if $author;
-    }
 
     $current_author ||= $app->user;
     $this_author_id = $current_author->id;
@@ -161,8 +193,8 @@ sub _create_dropdown_interface {
     my $hashify = sub {
         my ($author) = @_;
         return {
-            author_id   => $author->id,
-            nickname => $author->nickname || $author->name,
+            author_id          => $author->id,
+            nickname           => $author->nickname || $author->name,
             author_is_selected => $this_author_id == $author->id,
         };
     };
@@ -206,25 +238,13 @@ END_HTML
 # author is.
 sub _create_popup_interface {
     my ($arg_ref) = @_;
-    my $options  = $arg_ref->{options};
-    my $plugin   = $arg_ref->{plugin};
-    my $params   = $arg_ref->{params};
-    my $template = $arg_ref->{template};
-    my ($app)    = MT->instance;
-
-    # If a default author was specified, set them as the default. Otherwise
-    # set the currently logged-in user as the default. These are fallbacks
-    # specifically for when creating a new Entry/Page. If this is a saved 
-    # Entry/Page, set the current author to the saved author.
-    my $default = $plugin->get_config_value('default_author','blog:'.$app->blog->id);
-    my $current_author = $app->user;
-    if (my $entry_id = $params->{id}) {
-        my $entry = MT->model('entry')->load($entry_id);
-        $current_author = $entry->author if $entry;
-    } elsif ($default ne '') {
-        my $author = MT->model('author')->load( $default );
-        $current_author = $author if $author;
-    }
+    my $options        = $arg_ref->{options};
+    my $plugin         = $arg_ref->{plugin};
+    my $params         = $arg_ref->{params};
+    my $template       = $arg_ref->{template};
+    my $current_author = $arg_ref->{current_author};
+    my ($app) = MT->instance;
+    my $q     = $app->param;
 
     my $position = $template->getElementById( $options->{position} );
     my $created_by = $template->createElement('App:Setting', {

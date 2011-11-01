@@ -26,7 +26,7 @@ sub pre_save {
             || ($perms && $perms->can_edit_all_posts)
         );
     }
-    
+
     # Update the entry's author_id setting with new value
     $entry_page->author_id($newauthor);
     return 1;
@@ -373,6 +373,30 @@ sub popup_select_author {
             },
         }
     );
+}
+
+
+sub pre_preview {
+    my ($plugin, $app, $entry, $data) = @_;
+    my $q = $app->param;
+
+    # This causes any preview tags to use the selected author.
+    $entry->author_id( $q->param('new_author_id') );
+    @$data[0]->{data_value} = $q->param('new_author_id');
+
+    # Supply the `original_author_id` and `new_author_id` fields to the
+    # preview, which allows the post-save callback to work properly for the
+    # "Save this Entry" button found on the preview page.
+    push @$data, {
+        data_name  => 'original_author_id',
+        data_value => $q->param('author_id'),
+    };
+    push @$data, {
+        data_name  => 'new_author_id',
+        data_value => $q->param('new_author_id'),
+    };
+
+    return 1;
 }
 
 1;

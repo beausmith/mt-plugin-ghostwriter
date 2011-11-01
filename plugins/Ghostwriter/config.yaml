@@ -12,6 +12,7 @@ static_version: 1
 callbacks:
     MT::App::CMS::template_param.edit_entry: Ghostwriter::Plugin::update_param
     MT::App::CMS::cms_pre_save.entry:        Ghostwriter::Plugin::pre_save
+    MT::App::CMS::cms_pre_preview:           Ghostwriter::Plugin::pre_preview
 
 applications:
     cms:

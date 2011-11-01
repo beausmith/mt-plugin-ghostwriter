@@ -91,6 +91,8 @@ sub _create_dropdown_interface {
     # Load authors with permission on this blog
     my $author_roles = $plugin->get_config_value('author_roles');
 
+    # Were valid author roles specified in GhostWriter's plugin settings? If
+    # so, use them.
     my $auth_iter;
     if ($author_roles) {
         require MT::Role;
@@ -114,6 +116,9 @@ sub _create_dropdown_interface {
             }
         );
     }
+
+    # Author roles were not supplied in GhostWriter's plugin Settings, so just
+    # find authors who have adequate permission to post.
     else {
         require MT::Permission;
         $auth_iter = MT::Author->load_iter(

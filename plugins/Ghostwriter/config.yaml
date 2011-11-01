@@ -29,7 +29,7 @@ options:
         hint: "Choose how you'd prefer to select an author for Entry/Page ownership. The dropdown list is the &ldquo;original&rdquo; and faster method, however a popup may be preferred when choosing from many authors."
         type: radio
         values: 'Popup, Dropdown'
-        default: dropdown
+        default: Dropdown
         scope: system
     default_author:
         label: "Default Author"

@@ -37,6 +37,13 @@ sub update_param {
     my ($cb, $app, $params, $template) = @_;
     my $plugin = MT->component('ghostwriter');
 
+    # continue if user has permission to edit all posts
+    my $perms = $app->permissions;
+    return unless (
+        $app->user->is_superuser() 
+        || ($perms && $perms->can_edit_all_posts) 
+    );
+
     # This plugin works with MT4 and MT5, though MT5 needs some special 
     # handling. Create the pertinet variables here and just use them later.
     my $options = {};
@@ -52,11 +59,6 @@ sub update_param {
         $options->{label_class} = 'left-label';
     }
 
-    # continue if user has permission to edit all posts
-    my $perms = $app->permissions;
-    return unless (
-        $app->user->is_superuser() 
-        || ($perms && $perms->can_edit_all_posts) 
     );
 
     if ( $plugin->get_config_value('author_select_type') eq 'Popup') {

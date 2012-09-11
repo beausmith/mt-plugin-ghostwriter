@@ -6,12 +6,13 @@ icon: '../../support/plugins/ghostwriter/Ghostwriter.gif'
 author_name: "Beau Smith"
 author_link: "http://beausmith.com/"
 plugin_link: "https://github.com/beausmith/mt-plugin-ghostwriter"
-version: 1.6.4
+version: 1.6.5
 static_version: 1
 
 callbacks:
     MT::App::CMS::template_param.edit_entry: Ghostwriter::Plugin::update_param
     MT::App::CMS::cms_pre_save.entry:        Ghostwriter::Plugin::pre_save
+    MT::App::CMS::cms_pre_save.page:         Ghostwriter::Plugin::pre_save
     MT::App::CMS::cms_pre_preview:           Ghostwriter::Plugin::pre_preview
 
 applications:

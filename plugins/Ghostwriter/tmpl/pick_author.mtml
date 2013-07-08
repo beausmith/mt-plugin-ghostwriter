@@ -52,10 +52,18 @@ function returnMemberSelection(ok) {
             el_id.value = ids.join(',');
             el_name.innerHTML = names.join(',');
         }
+    <mt:If tag="Version" like="/^4/">
         closeDialog();
+    <mt:Else>
+        parent.jQuery.fn.mtDialog.close();
+    </mt:If>
 </mt:unless>
     } else {
+    <mt:If tag="Version" like="/^4/">
         closeDialog();
+    <mt:Else>
+        parent.jQuery.fn.mtDialog.close();
+    </mt:If>
     }
 }
 

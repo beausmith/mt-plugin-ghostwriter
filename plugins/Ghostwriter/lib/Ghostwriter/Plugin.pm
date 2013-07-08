@@ -263,16 +263,31 @@ sub _create_popup_interface {
     # Create the author widget display name and "change author" content.
     $inner_html .= '<div style="padding-top: 2px;">' # 2px aligns horizontally
         . '<span id="current_author_display_name" style="padding-right: 5px;">' 
-        . $current_author->nickname . '</span>'
+        . $current_author->nickname . '</span>';
 
-        . ' (<a href="javascript:void(0)" onclick="return '
-            . "openDialog(false, 'ghostwriter_pick_author', "
-            . "'blog_id=<mt:BlogID>&amp;idfield=new_author_id&amp;"
-            . "namefield=current_author_display_name&amp;"
-            . "cur_author_display_name='"
-            . " + document.getElementById('current_author_display_name').innerHTML )" 
-        . '">change&nbsp;author</a>)' # Don't break across lines
-        . '</div>';
+        # MT4
+        if ($app->product_version < 5) {
+            $inner_html .= ' (<a href="javascript:void(0)" onclick="return '
+                . "openDialog(false, 'ghostwriter_pick_author', "
+                . "'blog_id=<mt:BlogID>&amp;idfield=new_author_id&amp;"
+                . "namefield=current_author_display_name&amp;"
+                . "cur_author_display_name='"
+                . " + document.getElementById('current_author_display_name').innerHTML )";
+        }
+        # MT5
+        else {
+            $inner_html .= " (<a onclick=\"jQuery.fn.mtDialog.open('"
+                . $app->mt_uri . '?__mode=ghostwriter_pick_author&amp;'
+                . 'blog_id=' . $app->blog->id . '&amp;'
+                . 'idfield=new_author_id&amp;'
+                . 'namefield=current_author_display_name&amp;'
+                . "cur_author_display_name=' "
+                . "+ document.getElementById('current_author_display_name')."
+                . 'innerHTML )" style="cursor: pointer;"';
+        }
+
+        $inner_html .= '">change&nbsp;author</a>)' # Don't break across lines
+            . '</div>';
 
     $created_by->innerHTML( $inner_html );
     $template->insertBefore($created_by, $position);
@@ -284,6 +299,7 @@ sub popup_select_author {
     my $q      = $app->param;
     my $param  = {};
     my $plugin = MT->component('ghostwriter');
+    my $tmpl   = $plugin->load_tmpl('pick_author.mtml');
 
     # Load authors with permission on this blog
     my $author_roles = $plugin->get_config_value('author_roles');
@@ -348,7 +364,7 @@ sub popup_select_author {
             },
             args     => $args,
             code     => $hasher,
-            template => 'plugins/Ghostwriter/tmpl/pick_author.mtml',
+            template => $tmpl,
             params   => {
                 dialog_title =>
                   $app->translate("Select an entry author"),
@@ -362,8 +378,8 @@ sub popup_select_author {
                 panel_description => $app->translate("Display Name"),
                 panel_type        => 'author',
                 panel_multi       => defined $app->param('multi')
-                ? $app->param('multi')
-                : 0,
+                    ? $app->param('multi')
+                    : 0,
                 panel_searchable => 1,
                 panel_first      => 1,
                 panel_last       => 1,

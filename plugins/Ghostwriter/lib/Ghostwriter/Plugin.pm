@@ -68,8 +68,10 @@ sub update_param {
     );
 
     # Set the $current_author variable, to be used later in both the popup and
-    # dropdown style interfaces.
-    my $current_author;
+    # dropdown style interfaces. Set this to the author_id parameter, which
+    # works for new entries. The below checks will deal with existing entries.
+    my $author = MT->model('author')->load( $q->param('author_id') );
+    my $current_author = $author if $author;
 
     # Is this an existing entry? If yes, we want to check if the entry was
     # previewed (and then find the author supplied from the preview). If not
@@ -80,7 +82,7 @@ sub update_param {
         # so they are back at the Edit Entry interface. Use the `reedit` flag
         # to know this and load the correct author.
         if ( $app->param('reedit') ) {
-            my $author = MT->model('author')->load( $q->param('author_id') );
+            $author = MT->model('author')->load( $q->param('author_id') );
             $current_author = $author if $author;
         }
         
@@ -93,7 +95,7 @@ sub update_param {
     # This is a new entry. Check if a Default Author was specified in
     # GhostWriter's plugin Settings, and use it.
     } elsif ($default ne '') {
-        my $author = MT->model('author')->load( $default );
+        $author = MT->model('author')->load( $default );
         $current_author = $author if $author;
     }
 

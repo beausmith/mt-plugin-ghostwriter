@@ -31,9 +31,14 @@ function returnMemberSelection(ok) {
                 var inp = inputs[i];
                 var row = TC.getParentByTagName( inp, "tr" );
                 if (!row) continue;
-                
-                var labels = row.getElementsByClassName('panel-description');
-                
+
+                var labels = '';
+                // .getElementsByClassName won't work in IE 8 and lower.
+                // That's only a minor inconvenience because it means we
+                // display the author username instead of the display name.
+                if (row.getElementsByClassName) {
+                    labels = row.getElementsByClassName('panel-description');
+                }
                 // If the Display Name hasn't been entered (and therefore
                 // "panel-description" is empty) try to use the username.
                 if (labels.length == 0) {

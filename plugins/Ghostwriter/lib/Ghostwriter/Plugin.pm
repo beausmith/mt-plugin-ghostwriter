@@ -51,7 +51,7 @@ sub update_param {
     my $options = {};
     if (
         $app->product_name =~ m/Movable/  # Movable Type
-        && $app->product_version =~ m/^5/ # Version 5.x
+        && $app->product_version !~ m/^[234]/ # Version 5+
     ) {
         $options->{position} = 'basename';
         $options->{label_class} = 'top-label';

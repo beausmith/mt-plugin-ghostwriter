@@ -46,19 +46,20 @@ sub update_param {
         || ($perms && $perms->can_edit_all_posts) 
     );
 
-    # This plugin works with MT4 and MT5, though MT5 needs some special 
+    # This plugin works with MT4, 5, and 6, though MT4 needs some special
     # handling. Create the pertinet variables here and just use them later.
     my $options = {};
     if (
         $app->product_name =~ m/Movable/  # Movable Type
-        && $app->product_version !~ m/^[234]/ # Version 5+
+        && $app->product_version =~ m/^4/ # Version 4.x
     ) {
-        $options->{position} = 'basename';
-        $options->{label_class} = 'top-label';
+      $options->{position} = 'authored_on';
+      $options->{label_class} = 'left-label';
     }
+    # MT5 and 6
     else {
-        $options->{position} = 'authored_on';
-        $options->{label_class} = 'left-label';
+      $options->{position} = 'basename';
+      $options->{label_class} = 'top-label';
     }
 
     # If a default author was specified for this blog, use them.
@@ -225,7 +226,7 @@ sub _create_dropdown_interface {
         <mt:If name="id">
             <input type="hidden" name="original_author_id" value="<$mt:var name="entry_author_id"$>" />
         </mt:If>
-            <select name="new_author_id" class="full-width">
+            <select name="new_author_id" class="full-width full">
         <mt:loop name="author_loop">
                 <option value="<$mt:var name="author_id"$>"<mt:if name="author_is_selected"> selected="selected"</mt:if>><$mt:var name="nickname"$></option>
         </mt:loop>

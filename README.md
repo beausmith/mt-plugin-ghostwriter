@@ -58,10 +58,15 @@ they match one of the above methods.
 The Author select list is available as either a dropdown list or a popup
 dialog. This selection is made from the system plugin Settings screen.
 
+At the blog level, a default author can be selected for new entries.
+
 
 ## Requirements
 
-[Movable Type 4.0 or greater](http://www.movabletype.com)
+* [Movable Type 4.0 or greater](http://www.movabletype.com)
+* [Config
+  Assistant](https://github.com/openmelody/mt-plugin-configassistant/downloads)
+  version 2.2.5 or greater
 
 **Note:** an issue in MT4.01 doesn't allow changing page authors, but fixed in
 MT4.1+.
@@ -76,23 +81,6 @@ MT4.1+.
             plugins/
                 Ghostwriter/
                     Ghostwriter.gif
-
-## Revision History
-
-<dl>
-    <dt>v1.5 - 2011 Jul 25</dt>
-    <dd>Converted to a <code>config.yaml</code> style plugin.<br />
-        Added a popup dialog author select option.</dd>
-    <dt>v1.3 - 2010 Jan 11</dt>
-    <dd>Initial MT 5.x fix</dd>
-    <dt>v1.2 - 2009 Aug 21</dt>
-    <dd>Always include current author in select menu.<br />
-        Limit list of available authors to a specific role(s).</dd>
-    <dt>v1.1 - 2007 Sep 20</dt>
-    <dd>Removed some testing code</dd>
-    <dt>v1.0 - 2007 Sep 19</dt>
-    <dd>Initial Release</dd>
-</dl>
 
 ## Developers
 
@@ -109,4 +97,3 @@ Enjoy!
 ## License
 
 Artistic License 2.0 (see LICENSE.md file)
-

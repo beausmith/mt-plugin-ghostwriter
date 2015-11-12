@@ -2,28 +2,39 @@ id: ghostwriter
 key: ghostwriter
 name: Ghostwriter
 description: "Ghostwriter is a Movable Type plugin that adds an author field to Edit Entry and Edit Page screens for users with the role of Editor or Blog Administrator."
-icon: 'Ghostwriter.gif'
+icon: '../../support/plugins/ghostwriter/Ghostwriter.gif'
 author_name: "Beau Smith"
 author_link: "http://beausmith.com/"
 plugin_link: "https://github.com/beausmith/mt-plugin-ghostwriter"
-version: 1.5.1
+version: 1.6.9
+static_version: 1
 
 callbacks:
     MT::App::CMS::template_param.edit_entry: Ghostwriter::Plugin::update_param
     MT::App::CMS::cms_pre_save.entry:        Ghostwriter::Plugin::pre_save
+    MT::App::CMS::cms_pre_save.page:         Ghostwriter::Plugin::pre_save
+    MT::App::CMS::cms_pre_preview:           Ghostwriter::Plugin::pre_preview
 
 applications:
     cms:
         methods:
             ghostwriter_pick_author: Ghostwriter::Plugin::popup_select_author
 
-settings:
+options:
     author_roles:
-        default: ''
-        scope: 'system'
+        label: "Author Role(s)"
+        hint: "Comma separated list of role names for your authors."
+        type: text
+        scope: system
     author_select_type:
-        default: 'dropdown'
-        scope: 'system'
-
-system_config_template: 'tmpl/config.tmpl'
-
+        label: "Author Selection Type"
+        hint: "Choose how you'd prefer to select an author for Entry/Page ownership. The dropdown list is the &ldquo;original&rdquo; and faster method, however a popup may be preferred when choosing from many authors."
+        type: radio
+        values: 'Popup, Dropdown'
+        default: Dropdown
+        scope: system
+    default_author:
+        label: "Default Author"
+        hint: "Enter the name of the author you would like selected by default. Leave blank if you wish it to default to the currently logged in user."
+        type: author
+        scope: blog
